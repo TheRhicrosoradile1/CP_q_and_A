@@ -225,10 +225,364 @@ N = 10
 print(MDAS_Factorial( N ) ) 
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+3.) Finding the next Smallest Palindrome Number from given number N
+
+<video link explaining the problem>
+<Textual links explaining the problem>
+1.) https://www.geeksforgeeks.org/given-a-number-find-next-smallest-palindrome-larger-than-this-number/?ref=rp
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+C++ code:
+#include <stdio.h> 
+
+// A utility function to print an array 
+void printArray (int arr[], int n); 
+
+// A utility function to check if num has all 9s 
+int AreAll9s (int num[], int n ); 
+
+// Returns next palindrome of a given number num[]. 
+// This function is for input type 2 and 3 
+void generateNextPalindromeUtil (int num[], int n ) 
+{ 
+	// find the index of mid digit 
+	int mid = n/2; 
+
+	// A bool variable to check if copy of left side to right is sufficient or not 
+	bool leftsmaller = false; 
+
+	// end of left side is always 'mid -1' 
+	int i = mid - 1; 
+
+	// Beginning of right side depends if n is odd or even 
+	int j = (n % 2)? mid + 1 : mid; 
+
+// Initially, ignore the middle same digits 
+	while (i >= 0 && num[i] == num[j]) 
+		i--,j++; 
+
+	// Find if the middle digit(s) need to be incremented or not (or copying left 
+	// side is not sufficient) 
+	if ( i < 0 || num[i] < num[j]) 
+		leftsmaller = true; 
+
+	// Copy the mirror of left to tight 
+	while (i >= 0) 
+	{ 
+		num[j] = num[i]; 
+		j++; 
+		i--; 
+	} 
+
+	// Handle the case where middle digit(s) must be incremented. 
+	// This part of code is for CASE 1 and CASE 2.2 
+	if (leftsmaller == true) 
+	{ 
+		int carry = 1; 
+		i = mid - 1; 
+
+		// If there are odd digits, then increment 
+		// the middle digit and store the carry 
+		if (n%2 == 1) 
+		{ 
+			num[mid] += carry; 
+			carry = num[mid] / 10; 
+			num[mid] %= 10; 
+			j = mid + 1; 
+		} 
+		else
+			j = mid; 
+
+		// Add 1 to the rightmost digit of the left side, propagate the carry 
+		// towards MSB digit and simultaneously copying mirror of the left side 
+		// to the right side. 
+		while (i >= 0) 
+		{ 
+			num[i] += carry; 
+			carry = num[i] / 10; 
+			num[i] %= 10; 
+			num[j++] = num[i--]; // copy mirror to right 
+		} 
+	} 
+} 
+
+// The function that prints next palindrome of a given number num[] 
+// with n digits. 
+void generateNextPalindrome( int num[], int n ) 
+{ 
+	int i; 
+
+	printf("Next palindrome is:"); 
+
+	// Input type 1: All the digits are 9, simply o/p 1 
+	// followed by n-1 0's followed by 1. 
+	if( AreAll9s( num, n ) ) 
+	{ 
+		printf( "1 "); 
+		for( i = 1; i < n; i++ ) 
+			printf( "0 " ); 
+		printf( "1" ); 
+	} 
+
+	// Input type 2 and 3 
+	else
+	{ 
+		generateNextPalindromeUtil ( num, n ); 
+
+		// print the result 
+		printArray (num, n); 
+	} 
+} 
+
+// A utility function to check if num has all 9s 
+int AreAll9s( int* num, int n ) 
+{ 
+	int i; 
+	for( i = 0; i < n; ++i ) 
+		if( num[i] != 9 ) 
+			return 0; 
+	return 1; 
+} 
+
+/* Utility that prints out an array on a line */
+void printArray(int arr[], int n) 
+{ 
+	int i; 
+	for (i=0; i < n; i++) 
+		printf("%d ", arr[i]); 
+	printf("\n"); 
+} 
+
+// Driver Program to test above function 
+int main() 
+{ 
+	int num[] = {9, 4, 1, 8, 7, 9, 7, 8, 3, 2, 2}; 
+
+	int n = sizeof (num)/ sizeof(num[0]); 
+
+	generateNextPalindrome( num, n ); 
+
+	return 0; 
+} 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Python code:
+# Returns next palindrome of a given number num[]. 
+# This function is for input type 2 and 3 
+def generateNextPalindromeUtil (num, n) : 
+
+	# find the index of mid digit 
+	mid = int(n/2 ) 
+
+	# A bool variable to check if copy of left 
+	# side to right is sufficient or not 
+	leftsmaller = False
+
+	# end of left side is always 'mid -1' 
+	i = mid - 1
+
+	# Beginning of right side depends 
+	# if n is odd or even 
+	j = mid + 1 if (n % 2) else mid 
+
+	# Initially, ignore the middle same digits 
+	while (i >= 0 and num[i] == num[j]) : 
+		i-=1
+		j+=1
+
+	# Find if the middle digit(s) need to be 
+	# incremented or not (or copying left 
+	# side is not sufficient) 
+	if ( i < 0 or num[i] < num[j]): 
+		leftsmaller = True
+
+	# Copy the mirror of left to tight 
+	while (i >= 0) : 
+	
+		num[j] = num[i] 
+		j+=1
+		i-=1
+	
+
+	# Handle the case where middle 
+	# digit(s) must be incremented. 
+	# This part of code is for CASE 1 and CASE 2.2 
+	if (leftsmaller == True) : 
+	
+		carry = 1
+		i = mid - 1
+
+		# If there are odd digits, then increment 
+		# the middle digit and store the carry 
+		if (n%2 == 1) : 
+		
+			num[mid] += carry 
+			carry = int(num[mid] / 10 ) 
+			num[mid] %= 10
+			j = mid + 1
+		
+		else: 
+			j = mid 
+
+		# Add 1 to the rightmost digit of the 
+		# left side, propagate the carry 
+		# towards MSB digit and simultaneously 
+		# copying mirror of the left side 
+		# to the right side. 
+		while (i >= 0) : 
+		
+			num[i] += carry 
+			carry = num[i] / 10
+			num[i] %= 10
+			num[j] = num[i] # copy mirror to right 
+			j+=1
+			i-=1
+		
+# The function that prints next 
+# palindrome of a given number num[] 
+# with n digits. 
+def generateNextPalindrome(num, n ) : 
+
+	print("\nNext palindrome is:") 
+
+	# Input type 1: All the digits are 9, simply o/p 1 
+	# followed by n-1 0's followed by 1. 
+	if( AreAll9s( num, n ) == True) : 
+	
+		print( "1") 
+		for i in range(1, n): 
+			print( "0" ) 
+		print( "1") 
+	
+
+	# Input type 2 and 3 
+	else: 
+	
+		generateNextPalindromeUtil ( num, n ) 
+
+		# print the result 
+		printArray (num, n) 
+	
+# A utility function to check if num has all 9s 
+def AreAll9s(num, n ): 
+	for i in range(1, n): 
+		if( num[i] != 9 ) : 
+			return 0
+	return 1
+
+
+# Utility that prints out an array on a line 
+def printArray(arr, n): 
+
+	for i in range(0, n): 
+		print(int(arr[i]),end=" ") 
+	print() 
+
+
+# Driver Program to test above function 
+if __name__ == "__main__": 
+	num = [9, 4, 1, 8, 7, 9, 7, 8, 3, 2, 2] 
+	n = len(num) 
+	generateNextPalindrome( num, n ) 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Prime Numbers
+Finding the next Palindrome+Prime Number
+
 
 <link for video solution>
 <link for textual expalnation of problems>
 
+For any palindrome with even digits:
+abcddcba % 11
+= (a * 10000001 + b * 100001 * 10 + c * 1001 * 100 + d * 11 * 1000) % 11
+= 0
+
+All palindrome with even digits is multiple of 11.
+So among them, 11 is the only one prime
+if (8 <= N <= 11) return 11
+For other, we consider only palindrome with odd digits.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// CPP program to find next palindromic 
+// prime for a given number. 
+#include <iostream> 
+#include <string> 
+using namespace std; 
+
+bool isPrime(int num) 
+{ 
+	if (num < 2 || num % 2 == 0) 
+		return num == 2; 
+	for (int i = 3; i * i <= num; i += 2) 
+		if (num % i == 0) 
+			return false; 
+	return true; 
+} 
+
+int primePalindrome(int N) 
+{ 
+	// if(8<=N<=11) return 11 
+	if (8 <= N && N <= 11) 
+		return 11; 
+
+	// generate odd length palindrome number 
+	// which will cover given constraint. 
+	for (int x = 1; x < 100000; ++x) { 
+	
+		string s = to_string(x), r(s.rbegin(), s.rend()); 
+		int y = stoi(s + r.substr(1)); 
+	
+		// if y>=N and it is a prime number 
+		// then return it. 
+		if (y >= N && isPrime(y)) 
+			return y; 
+	} 
+
+	return -1; 
+} 
+
+// Driver code 
+int main() 
+{ 
+	cout << primePalindrome(112); 
+	return 0; 
+} 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Python code:
+# Python3 program to find next palindromic 
+# prime for a given number. 
+import math as mt 
+
+def isPrime(num): 
+
+	if (num < 2 or num % 2 == 0): 
+		return num == 2
+	for i in range(3, mt.ceil(mt.sqrt(num + 1))): 
+		if (num % i == 0): 
+			return False
+	return True
+
+def primePalindrome(N): 
+
+	# if(8<=N<=11) return 11 
+	if (8 <= N and N <= 11): 
+		return 11
+
+	# generate odd length palindrome number 
+	# which will cover given constraint. 
+	for x in range(1, 100000): 
+	
+		s = str(x) 
+		d = s[::-1] 
+		y = int(s + d[1:]) 
+	
+		# if y>=N and it is a prime number 
+		# then return it. 
+		if (y >= N and isPrime(y)): 
+			return y 
+	
+# Driver code 
+print(primePalindrome(112)) 
